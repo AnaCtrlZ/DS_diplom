@@ -31,28 +31,28 @@ def list_texts(df, list_index, path):
     list_text = []
     for index, row in selected_rows.iterrows():
         folder = row["folder"]
-        folder_name = f"document_{folder}_html"
+        folder_name = f"md-{folder}"
         page = row["file_name"]
-        page_name = f"page_{page}.html"
-        full_name = os.path.join(path, folder_name, "clean_html", page_name)
+        page_name = f"page_{page}.md"
+        full_name = os.path.join(path, folder_name, page_name)
         with open (full_name, encoding="utf-8") as f:
             html = f.read()
             list_text.append(html)
     return list_text
 
 
-# функция для создания промта из текста запроса и текста документа
+# функция для создания нового промта из текста запроса и текста документа
 def generate_promt(query, list_texts):
     prefix = "Запрос на получение информации."
     prefix += f"\nЗапрос: {query}\n"
     for text in list_texts:
         prefix += f"Документ:\n{text}\n"
-    prefix += "На основе представленных документов и запроса пользователя сформулируй ответ, учитывающий ключевые моменты и содержимое документов.\nУчти, что найденные документы и части могут не отвечать на запрос. Если список документов пустой, то ответь что по запросу ничего не найдено. Если документы не релевантны запросу, то ответь на основании общих сведений. Представь ответ в виде обычного текста."
+    prefix += "На основе представленных документов и запроса пользователя сформулируй ответ.\nУчти, что найденные документы могут не отвечать на запрос. Если список документов пустой, то ответь что по запросу ничего не найдено. Представь ответ в виде обычного текста."
     return prefix
 
 
-def send_request_to_vllm(api_url, prompt, model_name="default-model", max_tokens=200, temperature=0.4, headers=None, top_p = 0.7,
-                         length_penalty = 1.2, repetition_penalty = 1.05, no_repeat_ngram_size = 3, do_sample = True, top_k = 100, stream = False):
+def send_request_to_vllm(api_url, prompt, model_name="default-model", max_tokens=150, temperature=0.4, headers=None, top_p=0.6,
+                         length_penalty=1.6, repetition_penalty=1.1, no_repeat_ngram_size=4, do_sample=False, top_k=100, stream=False):
 
     """
     Отправляет POST-запрос в VLLM сервис для генерации текста.
@@ -68,7 +68,7 @@ def send_request_to_vllm(api_url, prompt, model_name="default-model", max_tokens
     # Подготовка данных для отправки
     payload = {"model": model_name,
             "messages": [
-                {"role": "system", "content": "You are a helpful assistant"},
+                {"role": "system", "content": "Ты — универсальный эксперт, готовый помочь с различными вопросами. Твоя задача — анализировать предоставленные документы их фрагменты и формировать точные и информативные ответы на вопросы пользователей."},
                 {"role": "user", "content": prompt}
             ],
             "temperature": temperature,

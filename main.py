@@ -13,7 +13,7 @@ from datetime import datetime
 
 index = faiss.read_index("index.faiss")
 df = pd.read_csv("catalog_page.csv", index_col = 0)
-path = "006 html"
+path = "md_docs"
 api_url = "http://158.255.5.135:1240/v1/chat/completions"
 # api_url = "https://api.openai.com/v1/chat/completions"
 api_url_token = "http://158.255.5.135:1240/tokenize" # серверное пространство для превращения текста в токены модели
@@ -49,7 +49,7 @@ async def cmd_start(message: types.Message):
 async def cmd_text(message: types.Message):
     query = message.text
     try:
-        k = 5
+        k = 15
         embedding = create_embedding(query)
         
         while k:
@@ -59,6 +59,7 @@ async def cmd_text(message: types.Message):
             if not check_max_token_overflow(prompt, api_url_token, model_name):
                 break
             k = k-1
+        print(k)
         answer = send_request_to_vllm(api_url, prompt, model_name)
         
         await message.answer(answer)
