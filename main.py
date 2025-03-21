@@ -14,17 +14,15 @@ from datetime import datetime
 index = faiss.read_index("index.faiss")
 df = pd.read_csv("catalog_page.csv", index_col = 0)
 path = "md_docs"
-api_url = "http://158.255.5.135:1240/v1/chat/completions"
-# api_url = "https://api.openai.com/v1/chat/completions"
-api_url_token = "http://158.255.5.135:1240/tokenize" # серверное пространство для превращения текста в токены модели
+api_url = "http://127.0.0.1:1240/v1/chat/completions"
+api_url_token = "http://127.0.0.1:1240/tokenize" # серверное пространство для превращения текста в токены модели
 model_name = "Qwen/Qwen2.5-3B-Instruct-GPTQ-Int8"    # поменяла модель, так как другая перестала отвечать
-# model_name = "Qwen/Qwen2.5-3B-Instruct-AWQ"
 
 # Включаем логирование, чтобы не пропустить важные сообщения
 logging.basicConfig(level=logging.INFO)
 
 # Объект бота
-bot = Bot(token="7937383086:AAGHTlRtPvJ_QGfaX0nzqokI0anqIMRgo74")
+bot = Bot(token="your_bot_token")
 
 # Диспетчер
 dp = Dispatcher()
